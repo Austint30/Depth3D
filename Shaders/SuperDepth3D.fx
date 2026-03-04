@@ -6580,7 +6580,6 @@ uniform int Extra_Information <
 			Persp *= lerp(0.75,1.0, saturate(smoothstep(-0.0175,min(0.5,0.13),Avr_Mix(float2(0.5,0.5)).x)) );
 		#endif
 
-
 		// Apply VR position tracking offsets
 		float2 VR_Offset = float2(0.0, 0.0);
 		if (VR_Position_Tracking || VR_Debug_Mode)
