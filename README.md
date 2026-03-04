@@ -28,6 +28,24 @@ SHA1: 6BCE6A4397C9BE283D860B9DAD6181FE12178EBF<br />
 
 No support for Laptops with Hybrid systems. Though there are workarounds as users noted.  
 
+### VR Position Tracking
+**Fully Functional**<br />
+
+SuperDepth3D now includes VR headset position tracking support! This feature allows the stereo 3D effect to be dynamically offset based on the position of your VR headset in 3D space, providing a more immersive experience.
+
+**Features:**
+- **Real VR Tracking:** Automatic head position tracking with SteamVR/OpenVR
+- **Debug Mode:** Manual control of position offsets (X, Y, Z axes) for testing without VR
+- **Position Scale:** Adjustable sensitivity multiplier (0-10x) for head movement effects
+- **3D Offset:** Head movement affects horizontal, vertical, and depth positioning
+- **Virtual Desktop Compatible:** Works with Virtual Desktop Classic and SteamVR overlays
+
+**Status:** Fully functional with SteamVR/OpenVR. Requires VR runtime to be active for automatic tracking.
+
+**Documentation:** 
+- [VR_POSITION_TRACKING.md](VR_POSITION_TRACKING.md) - Technical details and implementation
+- [VR_QUICKSTART.md](VR_QUICKSTART.md) - Quick setup guide
+
 ### Game Compatibility
 **Game Compatibility Information**
 

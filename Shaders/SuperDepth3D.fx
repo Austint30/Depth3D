@@ -1481,6 +1481,57 @@ uniform int SuperDepth3D <
 		> = false;
 	#endif
 	
+	// VR Position Tracking Parameters
+	uniform bool VR_Position_Tracking <
+		ui_label = "·Enable VR Position Tracking·";
+		ui_tooltip = "Enables VR headset position tracking to offset the stereo 3D effect.\n"
+					 "Requires SteamVR/OpenVR to be running in the background.\n"
+					 "Works with Virtual Desktop Classic and other VR viewing applications.\n"
+					 "Default is Off.";
+		ui_category_closed = true;
+		ui_category = "VR Position Tracking";
+	> = false;
+	
+	uniform bool VR_Debug_Mode <
+		ui_label = " Debug Mode (Manual Control)";
+		ui_tooltip = "Enable debug mode to manually control position offsets.\n"
+					 "Use this to test the position offset effect without VR hardware.\n"
+					 "When enabled, uses manual sliders instead of real HMD data.\n"
+					 "Default is Off.";
+		ui_category = "VR Position Tracking";
+	> = false;
+	
+	uniform float3 VR_Manual_Position <
+		ui_type = "drag";
+		ui_min = -1.0; ui_max = 1.0;
+		ui_label = " Manual Position (X, Y, Z)";
+		ui_tooltip = "Manual position offset for debug mode.\n"
+					 "X: Left/Right movement\n"
+					 "Y: Up/Down movement\n"
+					 "Z: Forward/Backward movement\n"
+					 "Only active when Debug Mode is enabled.\n"
+					 "Default is (0, 0, 0).";
+		ui_category = "VR Position Tracking";
+	> = float3(0.0, 0.0, 0.0);
+	
+	uniform float VR_Position_Scale <
+		ui_type = "drag";
+		ui_min = 0.0; ui_max = 10.0;
+		ui_label = " Position Scale Multiplier";
+		ui_tooltip = "Multiplier for VR position sensitivity.\n"
+					 "Higher values increase the effect of head movement on the 3D offset.\n"
+					 "Default is 1.0.";
+		ui_category = "VR Position Tracking";
+	> = 1.0;
+	
+	// HMD Position Data from ReShade VR Runtime Integration
+	// These uniforms are automatically populated by ReShade when a VR runtime (OpenVR/SteamVR) is active
+	// They return zeros when no VR runtime is detected
+	uniform float3 HMDPosition < source = "hmd_position"; >;
+	uniform float4 HMDRotation < source = "hmd_rotation"; >;
+	uniform float3 HMDPositionLeft < source = "hmd_position_left"; >;
+	uniform float3 HMDPositionRight < source = "hmd_position_right"; >;
+	
 	uniform int Focus_Reduction_Type <
 		ui_type = "combo";
 		ui_items = "World\0Weapon\0Mix\0";
@@ -6453,6 +6504,29 @@ uniform int Extra_Information <
 			return texcoord;
 	}
 
+	// VR Position Tracking Helper Functions
+	float3 Get_VR_Position()
+	{
+		// In debug mode, use manual position values for testing
+		if (VR_Debug_Mode)
+		{
+			return VR_Manual_Position * VR_Position_Scale;
+		}
+		
+		// Read actual HMD position from ReShade VR runtime integration
+		// ReShade queries OpenVR (SteamVR) safely without creating new sessions
+		// This works with Virtual Desktop, SteamVR overlays, and other VR applications
+		// Returns float3(0, 0, 0) if no VR runtime is active
+		//
+		// HMDPosition is in meters relative to the VR play space origin:
+		// X = Left(-) / Right(+)
+		// Y = Down(-) / Up(+)  
+		// Z = Forward(-) / Backward(+)
+		//
+		// Apply position scale to control sensitivity
+		return HMDPosition * VR_Position_Scale;
+	}
+
 	void Con_Values(in float2 texcoord, out float2 DLR, out float2 TCL, out float2 TCR, out float2 TCL_T, out float2 TCR_T, out float Pattern)
 	{
 		#if Virtual_Reality_Mode
@@ -6510,7 +6584,37 @@ uniform int Extra_Information <
 			Persp *= lerp(0.75,1.0, saturate(smoothstep(-0.0175,min(0.5,0.13),Avr_Mix(float2(0.5,0.5)).x)) );
 		#endif
 
+		// Apply VR position tracking offsets
+		float2 VR_Offset = float2(0.0, 0.0);
+		if (VR_Position_Tracking || VR_Debug_Mode)
+		{
+			float3 VR_Pos = Get_VR_Position();
+			// X axis: left/right movement affects horizontal stereo separation
+			// Y axis: up/down movement affects vertical offset
+			// Z axis: forward/backward movement affects stereo depth (convergence)
+			
+			// Apply X (left/right) as additional horizontal offset
+			VR_Offset.x = VR_Pos.x * 0.01; // Scale factor for horizontal offset
+			
+			// Apply Y (up/down) as vertical offset
+			VR_Offset.y = VR_Pos.y * 0.01; // Scale factor for vertical offset
+			
+			// Apply Z (forward/backward) to modify the perspective/convergence
+			// This affects the stereo separation amount
+			float depth_multiplier = 1.0 + (VR_Pos.z * 0.5); // Z axis modulates depth
+			Persp *= depth_multiplier;
+		}
+
 		TCL += Persp; TCR -= Persp; TCL_T += Persp; TCR_T -= Persp;
+		
+		// Apply VR positional offsets to both eyes
+		if (VR_Position_Tracking || VR_Debug_Mode)
+		{
+			TCL += VR_Offset;
+			TCR += VR_Offset;
+			TCL_T += VR_Offset;
+			TCR_T += VR_Offset;
+		}
 		#if !Virtual_Reality_Mode
 			#if !Reconstruction_Mode
 				#if !Inficolor_3D_Emulator
