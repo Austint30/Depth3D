@@ -2,11 +2,47 @@
 
 ## What is VR Position Tracking?
 
-VR Position Tracking is a new experimental feature in SuperDepth3D that allows the stereo 3D effect to respond to head movements in 3D space. This creates a more immersive and natural viewing experience, especially when using VR headsets or head-tracking systems.
+VR Position Tracking is a feature in SuperDepth3D that allows the stereo 3D effect to respond to real head movements from your VR headset in 3D space. This creates a more immersive and natural viewing experience.
 
-## Quick Setup - Debug Mode
+**Status: FULLY FUNCTIONAL** - Works with SteamVR/OpenVR!
 
-Since the VR runtime integration requires additional components (see VR_POSITION_TRACKING.md), you can test the feature using **Debug Mode** which allows manual control:
+## Quick Setup - Real VR Tracking
+
+### Prerequisites
+- SteamVR or OpenVR installed and running
+- VR headset connected and tracking
+- ReShade installed in your game
+
+### Step 1: Start SteamVR
+1. Launch SteamVR
+2. Ensure your headset is tracking properly
+3. You can minimize the SteamVR window
+
+### Step 2: Enable VR Tracking in Game
+1. Launch your game with ReShade
+2. Press the ReShade overlay key (usually `Home`)
+3. Find **SuperDepth3D** in the shader list
+4. Scroll to **VR Position Tracking** category
+5. Check **✓ Enable VR Position Tracking**
+6. **IMPORTANT:** Leave **Debug Mode** UNCHECKED for real tracking
+
+### Step 3: Adjust Sensitivity
+Use the **Position Scale Multiplier** slider:
+- **Value range:** 0.0 to 10.0
+- **Default:** 1.0
+- **Start with 1.0** and adjust based on preference
+- **Higher values:** More pronounced head movement effects
+- **Lower values:** Subtle effects
+
+### Step 4: Test It!
+Move your head around:
+- **Left/Right:** Notice horizontal parallax shift
+- **Up/Down:** Notice vertical parallax shift
+- **Forward/Back:** Notice depth change
+
+## Quick Setup - Debug Mode (Testing Without VR)
+
+If you want to test the feature without VR hardware, use Debug Mode:
 
 ### Step 1: Enable the Feature
 1. Launch your game with ReShade
@@ -142,35 +178,54 @@ You can keep it enabled even if not actively using it.
 
 ## Troubleshooting
 
-### "I don't see any effect"
+### Real VR Tracking Issues
+
+#### "I don't see any head tracking effect"
+- ✓ Verify SteamVR is running
 - ✓ Verify "Enable VR Position Tracking" is checked
-- ✓ Verify "Debug Mode" is checked
+- ✓ Verify "Debug Mode" is UNCHECKED
+- ✓ Check that your HMD is tracking (green in SteamVR)
+- ✓ Try increasing Position Scale to 2.0 or 3.0
+
+#### "No VR runtime detected"
+- Ensure SteamVR is running (check system tray)
+- Check that your HMD is connected
+- Restart the game after starting SteamVR
+
+#### "Effect is too strong"
+- Lower the "Position Scale Multiplier"
+- Start with 0.5 and adjust upward
+- Typical range: 0.5 to 2.0
+
+#### "Effect is too weak"
+- Increase the "Position Scale Multiplier"
+- Try values up to 5.0 for dramatic effects
+
+### Debug Mode Issues
+
+#### "I don't see any effect in Debug Mode"
+- ✓ Verify "Enable VR Position Tracking" is checked
+- ✓ Verify "Debug Mode" IS checked
 - ✓ Try extreme values (X: 1.0) to see obvious changes
 - ✓ Check Position Scale is not 0.0
 
-### "Effect is too strong"
-- Lower the "Position Scale Multiplier"
-- Use smaller position values (0.1-0.3 range)
-
-### "Effect is too weak"
-- Increase the "Position Scale Multiplier"
-- Use larger position values (0.5-1.0 range)
-
-### "Screen looks distorted"
+#### "Screen looks distorted"
 - This is normal for extreme position values
 - Keep X and Y within -0.5 to 0.5 range
 - Reduce Position Scale
 
-## Future: Real VR Tracking
+## Compatibility
 
-Once VR runtime integration is implemented (via addon or companion app):
+### Works With
+✅ Virtual Desktop Classic
+✅ SteamVR Desktop View
+✅ SteamVR Overlays
+✅ Any OpenVR-compatible headset
 
-1. **Automatic Mode:** Disable Debug Mode
-2. **Connect VR:** Ensure OpenXR/SteamVR is running
-3. **Head Tracking:** Your natural head movement will control offsets
-4. **Scale Adjust:** Use Position Scale to tune sensitivity
-
-See VR_POSITION_TRACKING.md for technical details on VR integration.
+### Requirements
+- SteamVR/OpenVR runtime
+- Compatible VR headset
+- ReShade with VR support
 
 ## Common Use Cases
 

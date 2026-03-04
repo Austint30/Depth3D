@@ -28,19 +28,23 @@ SHA1: 6BCE6A4397C9BE283D860B9DAD6181FE12178EBF<br />
 
 No support for Laptops with Hybrid systems. Though there are workarounds as users noted.  
 
-### VR Position Tracking (Experimental)
-**New Feature**<br />
+### VR Position Tracking
+**Fully Functional**<br />
 
-SuperDepth3D now includes experimental VR headset position tracking support. This feature allows the stereo 3D effect to be dynamically offset based on the position of a VR headset in 3D space, providing a more immersive experience.
+SuperDepth3D now includes VR headset position tracking support! This feature allows the stereo 3D effect to be dynamically offset based on the position of your VR headset in 3D space, providing a more immersive experience.
 
 **Features:**
-- **Debug Mode:** Manual control of position offsets (X, Y, Z axes) for testing
-- **Position Scale:** Adjustable sensitivity multiplier for head movement effects
+- **Real VR Tracking:** Automatic head position tracking with SteamVR/OpenVR
+- **Debug Mode:** Manual control of position offsets (X, Y, Z axes) for testing without VR
+- **Position Scale:** Adjustable sensitivity multiplier (0-10x) for head movement effects
 - **3D Offset:** Head movement affects horizontal, vertical, and depth positioning
+- **Virtual Desktop Compatible:** Works with Virtual Desktop Classic and SteamVR overlays
 
-**Current Status:** The UI controls and framework are fully implemented. Actual VR runtime position reading requires additional integration (see VR_POSITION_TRACKING.md for details).
+**Status:** Fully functional with SteamVR/OpenVR. Requires VR runtime to be active for automatic tracking.
 
-**Documentation:** For detailed information about VR position tracking, implementation details, and potential integration methods, see [VR_POSITION_TRACKING.md](VR_POSITION_TRACKING.md).
+**Documentation:** 
+- [VR_POSITION_TRACKING.md](VR_POSITION_TRACKING.md) - Technical details and implementation
+- [VR_QUICKSTART.md](VR_QUICKSTART.md) - Quick setup guide
 
 ### Game Compatibility
 **Game Compatibility Information**
